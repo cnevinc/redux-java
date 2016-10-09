@@ -16,7 +16,12 @@ android {
         versionName "1.0"
     }
 
+
     buildTypes {
+        debug{
+
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -30,10 +35,6 @@ android {
         debug.java.srcDirs += 'src/debug/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
         release.java.srcDirs += 'src/release/kotlin'
-    }
-
-    lintOptions {
-        abortOnError false
     }
 }
 

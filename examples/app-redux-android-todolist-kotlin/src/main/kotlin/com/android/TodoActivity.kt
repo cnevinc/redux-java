@@ -17,13 +17,14 @@ import com.redux.*
 import javax.inject.Inject
 
 
-public class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRefreshListener {
+
+class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject lateinit var context: Context
     @Inject lateinit var store: Store<AppAction, AppState>
     @Inject lateinit var actionCreator: ActionCreator
     private lateinit var adapter: MyAdapter
-    private var subscription: Subscription = Subscription.empty();
+    private var subscription: Subscription = Subscription.empty()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +99,7 @@ public class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRef
         super.onPause()
     }
 
+    // mapStateToProps ( sate -> {} ) // Subscriber = Connect
     override fun onStateChanged() = bind()
 
     private fun bind() {

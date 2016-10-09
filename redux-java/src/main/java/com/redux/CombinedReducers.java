@@ -15,6 +15,12 @@ public class CombinedReducers<A extends Action, S extends State> implements Redu
         this.reducers = reducers;
     }
 
+    /**
+     * Propagate the action to all child reducers
+     * @param action
+     * @param state
+     * @return
+     */
     @Override
     public S call(A action, S state) {
         for (Reducer<A, S> reducer : reducers) {
