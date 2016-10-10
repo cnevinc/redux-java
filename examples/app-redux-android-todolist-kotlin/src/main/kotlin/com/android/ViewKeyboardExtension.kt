@@ -4,12 +4,12 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 
-fun View.hideKeyboard(application : Context) {
-    inputMethodManager(application).hideSoftInputFromWindow(windowToken, 0)
+fun View.hideKeyboard() {
+    inputMethodManager(this.context).hideSoftInputFromWindow(windowToken, 0)
 }
 
-fun View.showKeyboard(application : Context) {
-    inputMethodManager(application).showSoftInputFromInputMethod(windowToken, 0)
+fun View.showKeyboard() {
+    inputMethodManager(this.context).showSoftInputFromInputMethod(windowToken, 0)
 }
 
 private fun inputMethodManager(application: Context): InputMethodManager {

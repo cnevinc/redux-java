@@ -2,8 +2,9 @@ package com.redux
 
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class Service {
+class Service @Inject constructor() {
     companion object {
         private val random: Random = Random()
         private val NOT_SET = -1
