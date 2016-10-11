@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -101,6 +102,8 @@ public class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRef
     override fun onStateChanged() = bind()
 
     private fun bind() {
+        Log.d("nevin3","=====bind() is called===========");
+
         swipeRefreshLayout().isRefreshing = store.state.isFetching
 
         val todoList = store.state.list

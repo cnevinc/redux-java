@@ -18,7 +18,7 @@ public abstract class Store<A extends Action, S extends State> {
 
     public abstract void dispatch(A action);
 
-    static class CoreStore<A extends Action, S extends State> extends Store<A,S> {
+    public static class CoreStore<A extends Action, S extends State> extends Store<A,S> {
 
         private static final int LISTENERS_INITIAL_CAPACITY = 100;
 
