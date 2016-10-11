@@ -5,16 +5,12 @@ import android.support.v7.app.AppCompatActivity
 import com.redux.*
 import kotlinx.android.synthetic.main.activity_main.*
 
+// Define app state
 data class AppState(val num: Int) : State
 
-sealed class AppAction : Action {
-
-    object Init : AppAction()
-    class Add(val num: Int) : AppAction()
-    class Minus(val num: Int) : AppAction()
-}
-
-val reducer: Reducer<AppAction, AppState> = Reducer({ action: AppAction, state: AppState ->
+// Define producer (#producer = #state)
+val reducer: Reducer<AppAction, AppState> =
+        Reducer({ action: AppAction, state: AppState ->
 
     when (action) {
         is AppAction.Init -> state
@@ -23,21 +19,32 @@ val reducer: Reducer<AppAction, AppState> = Reducer({ action: AppAction, state: 
     }
 })
 
-val store: Store<AppAction, AppState> = Store.create<AppAction, AppState>(AppState(0), reducer)
+//Define action
+sealed class AppAction : Action {
+
+    object Init : AppAction()
+    class Add(val num: Int) : AppAction()
+    class Minus(val num: Int) : AppAction()
+}
+
+// Create Store with above info
+val store: Store<AppAction, AppState> =
+        Store.create<AppAction, AppState>(AppState(0), reducer)
 
 class MainActivity : AppCompatActivity() , Subscriber{
 
-    private var subscription: Subscription = Subscription.empty();
+    private lateinit var subscription: Subscription
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        bt_plus.setOnClickListener{v -> store.dispatch(AppAction.Add(1))};
-        bt_minus.setOnClickListener{v -> store.dispatch(AppAction.Minus(1))};
-
+        // dispatch action
+        bt_plus.setOnClickListener{v -> store.dispatch(AppAction.Add(1))}
+        bt_minus.setOnClickListener{v -> store.dispatch(AppAction.Minus(1))}
     }
 
+    // subscribe to state change
     override fun onResume() {
         super.onResume()
         onStateChanged()
@@ -49,6 +56,8 @@ class MainActivity : AppCompatActivity() , Subscriber{
         super.onPause()
     }
 
+    // implements Subscriber interface, gets called when state changes
+    // you can map state to props here
     override fun onStateChanged() {
         tv_result?.text = store.state.num.toString()
     }
