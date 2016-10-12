@@ -10,5 +10,7 @@ sealed class AppAction : Action {
      class CompleteAll(val isCompleted: Boolean) : AppAction()
     object ClearCompleted : AppAction()
      class Fetching(val isFetching: Boolean) : AppAction()
+
+    class Edit(val id: Int , val text: String) : AppAction()
 }
 

@@ -27,7 +27,7 @@ public class ReduxModule {
         final StateConverter statePrettyPrintConverter = new StateConverter(new GsonBuilder().setPrettyPrinting().create());
 
 
-        final AppState appState = new AppState(Collections.<Todo>emptyList(), false);
+        final AppState appState = new AppState(Collections.<Todo>emptyList(), false , null);
         return new DevTool.Builder<>(AppAction.Init.INSTANCE, appState, com.redux.AppReducerKt.getReducer())
                 .withMonitor(ApplicationStateMonitor.printStream(System.err, statePrettyPrintConverter))
                 .withSessionPersistence(file, ActionConverter.INSTANCE, new StateConverter(new Gson()))

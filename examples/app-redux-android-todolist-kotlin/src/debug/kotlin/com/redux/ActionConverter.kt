@@ -1,9 +1,6 @@
 package com.redux
 
 import com.github.salomonbrys.kotson.*
-import com.google.gson.Gson
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
 object  ActionConverter : Converter<AppAction> {
@@ -36,6 +33,12 @@ object  ActionConverter : Converter<AppAction> {
                 "type" to "Fetching",
                 "isFetching" to element.isFetching.toJson()
         ).toString()
+        is AppAction.Edit -> jsonObject(
+                "type" to "Edit",
+                "id" to element.id.toJson(),
+                "text" to element.text.toJson()
+        ).toString()
+
     }
 
     override fun fromJson(json: String): AppAction {
@@ -48,6 +51,7 @@ object  ActionConverter : Converter<AppAction> {
             "CompleteAll" -> return AppAction.CompleteAll(element.get("isCompleted").bool)
             "ClearCompleted" -> return AppAction.ClearCompleted
             "Fetching" -> return AppAction.Fetching(element.get("isFetching").bool)
+            "Edit" -> return AppAction.Edit(element.get("id").int,element.get("text").string)
             else -> throw IllegalArgumentException("Unknown type")
         }
     }

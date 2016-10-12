@@ -18,7 +18,7 @@ import com.redux.*
 import javax.inject.Inject
 
 
-public class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRefreshListener {
+class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject lateinit var context: Context
     @Inject lateinit var store: Store<AppAction, AppState>
@@ -77,7 +77,20 @@ public class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRef
                 store.state.list,
                 resources,
                 { compoundButton: CompoundButton, isMarked: Boolean -> actionCreator.complete(compoundButton.tag as Int, isMarked) },
-                { v: View -> actionCreator.delete(v.tag as Int) }
+                { v: View -> actionCreator.delete(v.tag as Int) },
+                { t : TextView, actionId : Int, event : KeyEvent? ->
+                    Log.d("nevin4","editinging ...${t.tag}")
+                    if (event?.action == KeyEvent.ACTION_DOWN && (actionId == EditorInfo.IME_ACTION_SEND || actionId == EditorInfo.IME_ACTION_UNSPECIFIED)) {
+                        actionCreator.edit(t.tag as Int,t.text.toString())
+
+                        t.hideKeyboard(context)
+                        true
+                    } else {
+                        false
+                    }
+                }
+
+
         )
 
         val recyclerView = recyclerView()
@@ -116,6 +129,7 @@ public class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRef
         clearAllMarkedButton().isEnabled = todoList.isEmpty().not() && hasAtLeastOneComplete(todoList)
         adapter.todoList = todoList
         adapter.notifyDataSetChanged()
+
     }
 
     private fun hasAtLeastOneComplete(todoList: List<Todo>) = todoList.filter { it.isCompleted == true }.isEmpty().not()
@@ -124,9 +138,11 @@ public class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRef
 
     private class MyAdapter(
             var todoList: List<Todo>,
-            private val resources: Resources,
-            private val onMarkedListener: (CompoundButton, Boolean) -> Unit,
-            private val onClickDeleteTodo: (View) -> Unit) : RecyclerView.Adapter<MyViewHolder>() {
+            val resources: Resources,
+            val onMarkedListener: (CompoundButton, Boolean) -> Unit,
+            val onClickDeleteTodo: (View) -> Unit,
+            val OnEditorActionListener:(t : TextView, actionId : Int, event : KeyEvent?) -> Boolean
+    ) : RecyclerView.Adapter<MyViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             return MyViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.todo_item, parent, false))
@@ -137,7 +153,7 @@ public class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRef
             val checkBox = holder.itemView.findViewById(R.id.todo_item) as CheckBox
             checkBox.tag = todo.id
             checkBox.setOnCheckedChangeListener(null)
-            checkBox.text = todo.text
+//            checkBox.text = todo.text
             checkBox.isChecked = todo.isCompleted
             checkBox.setTextColor(if (todo.isCompleted) resources.getColor(R.color.task_done) else resources.getColor(R.color.task_todo))
             checkBox.setOnCheckedChangeListener(onMarkedListener)
@@ -146,6 +162,14 @@ public class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRef
             deleteButton.tag = todo.id
             deleteButton.text = if (todo.isCompleted) resources.getString(R.string.clear) else resources.getString(R.string.delete)
             deleteButton.setOnClickListener(onClickDeleteTodo)
+
+            val content = holder.itemView.findViewById(R.id.todo_content) as TextView
+            content.text = todo.text
+            content.tag = todo.id
+            content.setOnEditorActionListener(OnEditorActionListener)
+
+
+
         }
 
         override fun getItemCount() = todoList.size

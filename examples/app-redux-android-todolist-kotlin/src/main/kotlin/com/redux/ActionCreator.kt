@@ -2,11 +2,11 @@ package com.redux
 
 import javax.inject.Inject
 
-public class ActionCreator @Inject constructor(
+class ActionCreator @Inject constructor(
         private val store: Store<AppAction, AppState>,
         private val operations: Operations) {
 
-    public fun fetch(): rx.Subscription {
+    fun fetch(): rx.Subscription {
         store.dispatch(AppAction.Fetching(true))
         return operations
                 .fetch()
@@ -16,16 +16,18 @@ public class ActionCreator @Inject constructor(
                 .subscribe()
     }
 
-    public fun add(text: String) = store.dispatch(AppAction.Add(text, false))
+    fun add(text: String) = store.dispatch(AppAction.Add(text, false))
 
-    public fun add(text: String, isCompleted: Boolean) = store.dispatch(AppAction.Add(text, isCompleted))
+    fun add(text: String, isCompleted: Boolean) = store.dispatch(AppAction.Add(text, isCompleted))
 
-    public fun delete(id: Int) = store.dispatch(AppAction.Delete(id))
+    fun delete(id: Int) = store.dispatch(AppAction.Delete(id))
 
-    public fun complete(id: Int, isCompleted: Boolean) = store.dispatch(AppAction.Complete(id, isCompleted))
+    fun complete(id: Int, isCompleted: Boolean) = store.dispatch(AppAction.Complete(id, isCompleted))
 
-    public fun completeAll(isCompleted: Boolean) = store.dispatch(AppAction.CompleteAll(isCompleted))
+    fun completeAll(isCompleted: Boolean) = store.dispatch(AppAction.CompleteAll(isCompleted))
 
-    public fun clearCompleted() = store.dispatch(AppAction.ClearCompleted)
+    fun clearCompleted() = store.dispatch(AppAction.ClearCompleted)
+
+    fun edit(id: Int, text :String) = store.dispatch(AppAction.Edit(id, text))
 
 }
