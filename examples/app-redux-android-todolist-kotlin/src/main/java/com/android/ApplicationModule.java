@@ -1,14 +1,19 @@
 package com.android;
 
+import android.content.Context;
+
 import com.redux.ReduxModule;
+
 import dagger.Module;
 import dagger.Provides;
 
-import android.content.Context;
-
 @Module(
         includes = ReduxModule.class,
-        injects = TodoActivity.class
+
+        injects = {
+                TodoActivity.class,
+                MyAdapter.class
+        }
 )
 public class ApplicationModule {
 

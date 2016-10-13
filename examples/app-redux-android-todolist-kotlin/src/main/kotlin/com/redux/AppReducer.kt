@@ -16,7 +16,7 @@ val reducer: Reducer<AppAction, AppState> = Reducer({ action: AppAction, state: 
 
         is AppAction.Fetching -> state.copy(isFetching = action.isFetching)
 
-        is AppAction.Edit -> state.copy(editingTodoId = action.id , list = state.list.map { if (it.id == action.id) it.copy(text = action.text) else it })
+        is AppAction.Edit -> state.copy(editingTodoId = action.id , state.list.map { if (it.id == action.id) it.copy(text = action.text) else it })
     }
 })
 

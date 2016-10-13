@@ -5,33 +5,70 @@ import android.support.v7.app.AppCompatActivity
 import com.redux.*
 import kotlinx.android.synthetic.main.activity_main.*
 
-// Define app state
-data class AppState(val num: Int) : State
-
-// Define producer (#producer = #state)
-val reducer: Reducer<AppAction, AppState> =
-        Reducer({ action: AppAction, state: AppState ->
-
-    when (action) {
-        is AppAction.Init -> state
-        is AppAction.Add -> state.copy(state.num + 1)
-        is AppAction.Minus -> state.copy(state.num - 1)
-    }
-})
 
 //Define action
 sealed class AppAction : Action {
-
     object Init : AppAction()
     class Add(val num: Int) : AppAction()
     class Minus(val num: Int) : AppAction()
 }
 
+// Define producer (#producer = #state)
+val reducer: Reducer<AppAction, AppState> =
+        Reducer() { action: AppAction, state: AppState ->
+
+            when (action) {
+                is AppAction.Init -> state
+                is AppAction.Add -> state.copy(state.num + 1)
+                is AppAction.Minus -> state.copy(state.num - 1)
+            }
+        }
+
+/*
+// Define producer (#producer = #state)
+val reducer1: Reducer<AppAction, AppState> =
+        Reducer<AppAction, AppState>() { action: AppAction, state: AppState ->
+
+            when (action) {
+                is AppAction.Init -> state
+                is AppAction.Add -> state.copy(state.num + 1)
+                is AppAction.Minus -> state.copy(state.num - 1)
+            }
+        }
+
+
+fun reducerFun1(): Reducer<AppAction, AppState> {
+    return Reducer() { action: AppAction, state: AppState ->
+
+        when (action) {
+            is AppAction.Init -> state
+            is AppAction.Add -> state.copy(state.num + 1)
+            is AppAction.Minus -> state.copy(state.num - 1)
+        }
+    }
+}
+
+
+fun reducerFun2(): Reducer<AppAction, AppState> {
+    return object : Reducer<AppAction, AppState> {
+        override fun call(action: AppAction, state: AppState): AppState {
+            when (action) {
+                is AppAction.Init -> return state
+                is AppAction.Add -> return state.copy(state.num + 1)
+                is AppAction.Minus -> return state.copy(state.num - 1)
+            }
+        }
+    }
+}
+*/
+// Define app state
+data class AppState(val num: Int) : State
+
 // Create Store with above info
 val store: Store<AppAction, AppState> =
         Store.create<AppAction, AppState>(AppState(0), reducer)
 
-class MainActivity : AppCompatActivity() , Subscriber{
+class MainActivity : AppCompatActivity(), Subscriber {
 
     private lateinit var subscription: Subscription
 
@@ -40,8 +77,8 @@ class MainActivity : AppCompatActivity() , Subscriber{
         setContentView(R.layout.activity_main)
 
         // dispatch action
-        bt_plus.setOnClickListener{v -> store.dispatch(AppAction.Add(1))}
-        bt_minus.setOnClickListener{v -> store.dispatch(AppAction.Minus(1))}
+        bt_plus.setOnClickListener { v -> store.dispatch(AppAction.Add(1)) }
+        bt_minus.setOnClickListener { v -> store.dispatch(AppAction.Minus(1)) }
     }
 
     // subscribe to state change

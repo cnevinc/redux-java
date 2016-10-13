@@ -25,9 +25,8 @@ public abstract class Store<A extends Action, S extends State> {
         private final List<Subscriber> subscribers;
         private final Reducer<A, S> reducer;
         private final AtomicBoolean isReducing;
-
         private S currentState;
-
+    1
         CoreStore(S initialState, Reducer<A, S> reducer) {
             this.reducer = reducer;
             this.currentState = initialState;

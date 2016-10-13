@@ -1,16 +1,13 @@
 package com.android
 
 import android.content.Context
-import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.KeyEvent
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import com.android.todolist.R
@@ -74,7 +71,7 @@ class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRefreshLis
 
     private fun setupRecycler() {
         adapter = MyAdapter(
-                store.state.list,
+
                 resources,
                 { compoundButton: CompoundButton, isMarked: Boolean -> actionCreator.complete(compoundButton.tag as Int, isMarked) },
                 { v: View -> actionCreator.delete(v.tag as Int) },
@@ -115,7 +112,6 @@ class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRefreshLis
     override fun onStateChanged() = bind()
 
     private fun bind() {
-        Log.d("nevin3","=====bind() is called===========");
 
         swipeRefreshLayout().isRefreshing = store.state.isFetching
 
@@ -125,10 +121,7 @@ class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRefreshLis
         markAllView.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean -> }
         markAllView.isChecked = todoList.isEmpty().not() && isAllCompleted(todoList)
         markAllView.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean -> actionCreator.completeAll(isChecked) }
-
         clearAllMarkedButton().isEnabled = todoList.isEmpty().not() && hasAtLeastOneComplete(todoList)
-        adapter.todoList = todoList
-        adapter.notifyDataSetChanged()
 
     }
 
@@ -136,45 +129,5 @@ class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRefreshLis
 
     private fun isAllCompleted(todoList: List<Todo>) = todoList.filter { it.isCompleted == false }.isEmpty()
 
-    private class MyAdapter(
-            var todoList: List<Todo>,
-            val resources: Resources,
-            val onMarkedListener: (CompoundButton, Boolean) -> Unit,
-            val onClickDeleteTodo: (View) -> Unit,
-            val OnEditorActionListener:(t : TextView, actionId : Int, event : KeyEvent?) -> Boolean
-    ) : RecyclerView.Adapter<MyViewHolder>() {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-            return MyViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.todo_item, parent, false))
-        }
-
-        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            val todo = todoList.get(position)
-            val checkBox = holder.itemView.findViewById(R.id.todo_item) as CheckBox
-            checkBox.tag = todo.id
-            checkBox.setOnCheckedChangeListener(null)
-//            checkBox.text = todo.text
-            checkBox.isChecked = todo.isCompleted
-            checkBox.setTextColor(if (todo.isCompleted) resources.getColor(R.color.task_done) else resources.getColor(R.color.task_todo))
-            checkBox.setOnCheckedChangeListener(onMarkedListener)
-
-            val deleteButton = holder.itemView.findViewById(R.id.todo_clear) as Button
-            deleteButton.tag = todo.id
-            deleteButton.text = if (todo.isCompleted) resources.getString(R.string.clear) else resources.getString(R.string.delete)
-            deleteButton.setOnClickListener(onClickDeleteTodo)
-
-            val content = holder.itemView.findViewById(R.id.todo_content) as TextView
-            content.text = todo.text
-            content.tag = todo.id
-            content.setOnEditorActionListener(OnEditorActionListener)
-
-
-
-        }
-
-        override fun getItemCount() = todoList.size
-
-    }
-
-    private class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
