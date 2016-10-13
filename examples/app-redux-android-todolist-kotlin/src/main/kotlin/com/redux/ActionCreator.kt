@@ -28,6 +28,6 @@ class ActionCreator @Inject constructor(
 
     fun clearCompleted() = store.dispatch(AppAction.ClearCompleted)
 
-    fun edit(id: Int, text :String) = store.dispatch(AppAction.Edit(id, text))
+    fun edit(id: Int?, text :String) = store.dispatch(AppAction.Edit(id, text))
 
 }

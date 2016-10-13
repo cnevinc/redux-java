@@ -11,6 +11,6 @@ sealed class AppAction : Action {
     object ClearCompleted : AppAction()
      class Fetching(val isFetching: Boolean) : AppAction()
 
-    class Edit(val id: Int , val text: String) : AppAction()
+    class Edit(val id: Int? , val text: String) : AppAction()
 }
 

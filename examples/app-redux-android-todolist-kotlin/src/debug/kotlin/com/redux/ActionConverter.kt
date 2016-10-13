@@ -35,7 +35,7 @@ object  ActionConverter : Converter<AppAction> {
         ).toString()
         is AppAction.Edit -> jsonObject(
                 "type" to "Edit",
-                "id" to element.id.toJson(),
+                "id" to element.id?.toJson(),
                 "text" to element.text.toJson()
         ).toString()
 
@@ -51,7 +51,7 @@ object  ActionConverter : Converter<AppAction> {
             "CompleteAll" -> return AppAction.CompleteAll(element.get("isCompleted").bool)
             "ClearCompleted" -> return AppAction.ClearCompleted
             "Fetching" -> return AppAction.Fetching(element.get("isFetching").bool)
-            "Edit" -> return AppAction.Edit(element.get("id").int,element.get("text").string)
+            "Edit" -> return AppAction.Edit(element.get("id")?.int,element.get("text").string)
             else -> throw IllegalArgumentException("Unknown type")
         }
     }
