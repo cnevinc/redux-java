@@ -29,13 +29,13 @@ class MyAdapter(
         val resources: Resources,
         val onMarkedListener: (CompoundButton, Boolean) -> Unit,
         val onClickDeleteTodo: (View) -> Unit,
-        val OnEditorActionListener:(t : TextView, actionId : Int, event : KeyEvent?) -> Boolean
-) : RecyclerView.Adapter<MyViewHolder>() , Subscriber {
+        val OnEditorActionListener: (t: TextView, actionId: Int, event: KeyEvent?) -> Boolean
+) : RecyclerView.Adapter<MyViewHolder>(), Subscriber {
 
     @Inject lateinit var store: Store<AppAction, AppState>
     @Inject lateinit var actionCreator: ActionCreator
 
-    private var subscription: Subscription = Subscription.empty();
+    private var subscription: Subscription = Subscription.empty()
 
     init {
         Application.getObjectGraph().inject(this)
@@ -71,54 +71,11 @@ class MyAdapter(
         content.tag = todo.id
         content.setOnEditorActionListener(OnEditorActionListener)
 
-        val duration = 100L
-        if (store.state.editingTodoId == todo.id){
-            //holder.itemView.setBackgroundResource(android.R.color.holo_red_dark)
-            val targetView = holder.itemView
-            val animator1 = ObjectAnimator.ofFloat(targetView, "translationX", 5f);
-            animator1.repeatCount = 0;
-            animator1.duration = duration
+        if (store.state.editingTodoId == todo.id) {
+            animateClickAction(holder.itemView, 100L)
 
-
-            val animator2 = ObjectAnimator.ofFloat(targetView, "translationY", 5f);
-            animator2.repeatCount = 0;
-            animator2.duration = duration
-
-            val animator3 = ObjectAnimator.ofFloat(targetView, "translationX", 0f);
-            animator3.repeatCount = 0
-            animator3.duration = duration
-
-            val animator4 = ObjectAnimator.ofFloat(targetView, "translationY", 0f);
-            animator4.repeatCount = 0
-            animator4.duration = duration
-
-//sequencial animation
-            val set = AnimatorSet();
-            set.play(animator1).with(animator2);
-            set.play(animator1).before(animator3);
-            set.play(animator3).with(animator4);
-
-            set.start();
-            set.addListener(object : AnimatorListener{
-                override fun onAnimationRepeat(p0: Animator?) {
-
-                }
-
-                override fun onAnimationEnd(p0: Animator?) {
-                    actionCreator.edit(null,"");
-                }
-
-                override fun onAnimationCancel(p0: Animator?) {
-
-                }
-
-                override fun onAnimationStart(p0: Animator?) {
-
-                }
-            });
-
-        }else{
-            holder.itemView.background = null;
+        } else {
+            holder.itemView.background = null
         }
 
 
@@ -126,6 +83,52 @@ class MyAdapter(
 
     override fun getItemCount() = store.state.list.size
 
+    fun animateClickAction(targetView: View, duration: Long) {
+        val animator1 = ObjectAnimator.ofFloat(targetView, "translationX", 5f)
+        animator1.repeatCount = 0
+        animator1.duration = duration
+
+
+        val animator2 = ObjectAnimator.ofFloat(targetView, "translationY", 5f)
+        animator2.repeatCount = 0
+        animator2.duration = duration
+
+        val animator3 = ObjectAnimator.ofFloat(targetView, "translationX", 0f)
+        animator3.repeatCount = 0
+        animator3.duration = duration
+
+        val animator4 = ObjectAnimator.ofFloat(targetView, "translationY", 0f)
+        animator4.repeatCount = 0
+        animator4.duration = duration
+
+        val set = AnimatorSet()
+        set.play(animator1).with(animator2)
+        set.play(animator1).before(animator3)
+        set.play(animator3).with(animator4)
+
+        set.start()
+        set.addListener(object : AnimatorListener {
+            override fun onAnimationRepeat(p0: Animator?) {
+
+            }
+
+            override fun onAnimationEnd(p0: Animator?) {
+                actionCreator.edit(null, "")
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {
+
+            }
+
+            override fun onAnimationStart(p0: Animator?) {
+
+            }
+        })
+
+
+    }
+
 }
+
 
 

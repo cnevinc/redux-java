@@ -1,7 +1,5 @@
 package com.android
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
@@ -80,7 +78,6 @@ class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRefreshLis
                 { t : TextView, actionId : Int, event : KeyEvent? ->
                     Log.d("nevin4","editinging ..$event .$actionId ${t.tag}")
                     if (event?.action == KeyEvent.ACTION_DOWN || actionId == EditorInfo.IME_ACTION_DONE ) {
-//                        animateClick(t)
                         actionCreator.edit(t.tag as Int,t.text.toString())
                         t.hideKeyboard(context)
                         true
@@ -95,33 +92,6 @@ class TodoActivity : BaseActivity(), Subscriber, SwipeRefreshLayout.OnRefreshLis
         val recyclerView = recyclerView()
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
-    }
-
-    private fun  animateClick(targetView: TextView) {
-        val duration = 100L
-        val animator1 = ObjectAnimator.ofFloat(targetView, "translationX", 5f)
-        animator1.repeatCount = 0
-        animator1.duration = duration
-
-
-        val animator2 = ObjectAnimator.ofFloat(targetView, "translationY", 5f)
-        animator2.repeatCount = 0
-        animator2.duration = duration
-
-        val animator3 = ObjectAnimator.ofFloat(targetView, "translationX", 0f)
-        animator3.repeatCount = 0
-        animator3.duration = duration
-
-        val animator4 = ObjectAnimator.ofFloat(targetView, "translationY", 0f)
-        animator4.repeatCount = 0
-        animator4.duration = duration
-
-        val set = AnimatorSet()
-        set.play(animator1).with(animator2)
-        set.play(animator1).before(animator3)
-        set.play(animator3).with(animator4)
-
-        set.start()
     }
 
 
