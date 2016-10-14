@@ -3,7 +3,7 @@ package com.redux
 import com.github.salomonbrys.kotson.*
 import com.google.gson.JsonParser
 
-object  ActionConverter : Converter<AppAction> {
+object ActionConverter : Converter<AppAction> {
     override fun toJson(element: AppAction): String = when (element) {
         is AppAction.Init -> jsonObject(
                 "type" to "Init"
@@ -43,7 +43,7 @@ object  ActionConverter : Converter<AppAction> {
 
     override fun fromJson(json: String): AppAction {
         val element = JsonParser().parse(json)
-        when(element.get("type").string) {
+        when (element.get("type").string) {
             "Init" -> return AppAction.Init
             "Add" -> return AppAction.Add(element.get("text").string, element.get("isCompleted").bool)
             "Delete" -> return AppAction.Delete(element.get("id").int)
@@ -51,7 +51,17 @@ object  ActionConverter : Converter<AppAction> {
             "CompleteAll" -> return AppAction.CompleteAll(element.get("isCompleted").bool)
             "ClearCompleted" -> return AppAction.ClearCompleted
             "Fetching" -> return AppAction.Fetching(element.get("isFetching").bool)
-            "Edit" -> return AppAction.Edit(element.get("id")?.int,element.get("text").string)
+
+            "Edit" -> {
+                var id: Int?
+                if (element.asJsonObject.has("id")) {
+                    id = element.get("id").int
+                } else {
+                    id = null
+                }
+                return AppAction.Edit(id, element.get("text").string)
+
+            }
             else -> throw IllegalArgumentException("Unknown type")
         }
     }
