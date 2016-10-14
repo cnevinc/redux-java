@@ -12,6 +12,7 @@ import dagger.Provides;
 
         injects = {
                 TodoActivity.class,
+                MainActivity.class,
                 MyAdapter.class
         }
 )
